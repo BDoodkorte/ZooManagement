@@ -13,20 +13,21 @@ namespace ZooManagement.Repositories
 {
     public interface IAnimalRepo
     {
-        AnimalDetail Create(AnimalDetail post);
-
+        AnimalDetail Create(AnimalDetail animal);
+        AnimalDetail GetById(int id);
+        List<AnimalType> ListofTypes();
     }
 
-    public class PostsRepo : IAnimalRepo
+    public class AnimalRepo : IAnimalRepo
     {
         private readonly ZooManagementDbContext _context;
 
-        public PostsRepo(ZooManagementDbContext context)
+        public AnimalRepo(ZooManagementDbContext context)
         {
             _context = context;
         }
 
-public AnimalDetail Create(AnimalDetail animal)
+        public AnimalDetail Create(AnimalDetail animal)
         {
             var insertResult = _context.Animal.Add(new AnimalDetail
             {
@@ -38,6 +39,18 @@ public AnimalDetail Create(AnimalDetail animal)
             });
             _context.SaveChanges();
             return insertResult.Entity;
+        }
+
+        public AnimalDetail GetById(int id)
+        {
+            return _context.Animal
+                .Single(animal => animal.Id == id);
+        }
+
+        public List<AnimalType> ListofTypes()
+        {
+            var TypeList = _context.AnimalType.ToList();
+            return TypeList;
         }
     }
 }

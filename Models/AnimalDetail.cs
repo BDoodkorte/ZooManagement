@@ -7,4 +7,6 @@ public class AnimalDetail
     public string DOB { get; set; }
     public string DateAcquired { get; set; }
     public AnimalType Type { get; set; } //create foreign key
+
+    
 }
