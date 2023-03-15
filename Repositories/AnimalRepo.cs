@@ -16,6 +16,8 @@ namespace ZooManagement.Repositories
         AnimalDetail Create(AnimalDetail animal);
         AnimalDetail GetById(int id);
         List<AnimalType> ListofTypes();
+        IEnumerable<AnimalDetail> SearchFeed(AnimalSearchRequest search);
+        int Count(AnimalSearchRequest search);
     }
 
     public class AnimalRepo : IAnimalRepo
@@ -51,6 +53,21 @@ namespace ZooManagement.Repositories
         {
             var TypeList = _context.AnimalType.ToList();
             return TypeList;
+        }
+
+
+         public IEnumerable<AnimalDetail> SearchFeed(AnimalSearchRequest search)
+        {
+            return _context.Animal
+                .OrderByDescending(p => p.Type.Species)
+                .Skip((search.Page - 1) * search.PageSize)
+                .Take(search.PageSize);
+        }
+        
+        public int Count(AnimalSearchRequest search)
+        {
+            return _context.Animal
+                .Count();
         }
     }
 }
