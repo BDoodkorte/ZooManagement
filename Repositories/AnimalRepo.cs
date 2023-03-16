@@ -60,11 +60,20 @@ namespace ZooManagement.Repositories
         {
             DateTime currentDate = DateTime.Now;
             DateTime requiredDate = DateTime.Now;
-            if(search.Age != null){
-             requiredDate = currentDate.AddYears(-(search.Age.Value));
-            } 
-            return _context.Animal
-                .OrderByDescending(p => p.Type.Species)
+            IEnumerable<AnimalDetail> animalData = _context.Animal.Include(s => s.Type);
+            if (search.OrderBy != null)
+            {
+                animalData = animalData.OrderBy(p => p.GetType().GetProperty(search.OrderBy).GetValue(p));
+            }
+            else
+            {
+                animalData = animalData.OrderBy(p => p.Type.Species);
+            }
+            if (search.Age != null)
+            {
+                requiredDate = currentDate.AddYears(-(search.Age.Value));
+            }
+            return animalData
                 .Where(p => search.Species == null || p.Type.Species == search.Species)
                 .Where(p => search.Classification == null || p.Type.Classification == search.Classification)
                 .Where(p => search.DateAcquired == null || p.DateAcquired == search.DateAcquired)

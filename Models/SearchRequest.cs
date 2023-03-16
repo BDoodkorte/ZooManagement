@@ -15,6 +15,8 @@ namespace ZooManagement.Models
         public int? Age { get; set; }
         public string? DateAcquired { get; set; }
 
+        public string? OrderBy {get; set;}
+
         public override string Filters
         {
             get
@@ -28,6 +30,8 @@ namespace ZooManagement.Models
                 filters += $"&Age={Age}";
 
                 filters += $"&DateAcquired={DateAcquired}";
+
+                filters += $"&OrderBy={OrderBy}";
 
                 return filters;
             }
