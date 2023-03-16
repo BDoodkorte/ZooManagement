@@ -56,14 +56,23 @@ namespace ZooManagement.Repositories
         }
 
 
-         public IEnumerable<AnimalDetail> SearchFeed(AnimalSearchRequest search)
+        public IEnumerable<AnimalDetail> SearchFeed(AnimalSearchRequest search)
         {
+            DateTime currentDate = DateTime.Now;
+            DateTime requiredDate = DateTime.Now;
+            if(search.Age != null){
+             requiredDate = currentDate.AddYears(-(search.Age.Value));
+            } 
             return _context.Animal
                 .OrderByDescending(p => p.Type.Species)
+                .Where(p => search.Species == null || p.Type.Species == search.Species)
+                .Where(p => search.Classification == null || p.Type.Classification == search.Classification)
+                .Where(p => search.DateAcquired == null || p.DateAcquired == search.DateAcquired)
+                .Where(p => search.Age == null || p.DOB.Year == requiredDate.Year)
                 .Skip((search.Page - 1) * search.PageSize)
                 .Take(search.PageSize);
         }
-        
+
         public int Count(AnimalSearchRequest search)
         {
             return _context.Animal
